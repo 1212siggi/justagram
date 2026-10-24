@@ -103,8 +103,19 @@ export class BrowserService {
           window.__JUSTAGRAM_INITIALIZED__ = true;
           window.__JUSTAGRAM_DATA__ = ${JSON.stringify(payload)};
           ${injectedScripts.join("\n;\n")}
-          document.querySelectorAll('a[href="/"]').forEach(link => {
-  link.setAttribute("href", "/?variant=following");
+          const updateHomeLinks = () => {
+  document.querySelectorAll('a[href="/"]').forEach(link => {
+    link.setAttribute("href", "/?variant=following");
+  });
+};
+
+updateHomeLinks();
+
+new MutationObserver(updateHomeLinks).observe(document.documentElement, {
+  childList: true,
+  subtree: true,
+  attributes: true,
+  attributeFilter: ["href"]
 });
         })();
       `,
