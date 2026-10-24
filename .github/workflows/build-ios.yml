@@ -34,6 +34,28 @@ jobs:
 
       - name: Build and sync
         run: bun run sync
+        
+      - name: Enable iOS swipe navigation
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          files = list(Path("ios").rglob("CDVWKInAppBrowser.m"))
+          if len(files) != 1:
+              raise SystemExit(f"Expected one iOS plugin file, found {len(files)}")
+
+          path = files[0]
+          source = path.read_text()
+
+          old = "self.webView.allowsBackForwardNavigationGestures = NO;"
+          new = "self.webView.allowsBackForwardNavigationGestures = YES;"
+
+          if source.count(old) != 1:
+              raise SystemExit("Could not locate the expected swipe setting")
+
+          path.write_text(source.replace(old, new))
+          print(f"Enabled swipe navigation in {path}")
+          PY
 
       - name: Build unsigned iOS app
         run: |
