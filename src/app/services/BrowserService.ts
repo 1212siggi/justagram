@@ -110,27 +110,6 @@ export class BrowserService {
  const isDmInbox =
     /^\/direct\/(?:inbox\/?)?$/.test(window.location.pathname);
 
-  if (isDmInbox) {
-    const backIcon = target.closest(
-      'svg[aria-label="Back"], svg[aria-label="Tilbake"]'
-    );
-
-    if (backIcon) {
-      const backButton = backIcon.closest(
-        'button, a, [role="button"]'
-      );
-
-      if (backButton) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-
-        window.location.assign(
-          "https://www.instagram.com/?variant=following"
-        );
-        return;
-      }
-    }
-  }
 const link = target.closest('a[href="/"], a[href="https://www.instagram.com/"]');
 
   if (!link) return;
