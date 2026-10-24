@@ -120,7 +120,7 @@ if (!(target instanceof Element)) return;
 
     if (
       backButton &&
-      backButton.querySelector('svg[aria-label="Tilbake"]')
+      backButton.querySelector('svg[aria-label="Tilbake"] line')
     ) {
       event.preventDefault();
       event.stopImmediatePropagation();
