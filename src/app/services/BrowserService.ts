@@ -105,30 +105,29 @@ export class BrowserService {
           ${injectedScripts.join("\n;\n")}
          document.addEventListener("click", function (event) {
   const target = event.target;
+if (!(target instanceof Element)) return;
 
-  if (!(target instanceof Element)) return;
- const isDmInbox =
-    /^\/direct\/(?:inbox\/?)?$/.test(window.location.pathname);
+const link = target.closest(
+          'a[href="/"], a[href="https://www.instagram.com/"]'
+        );
 
-const link = target.closest('a[href="/"], a[href="https://www.instagram.com/"]');
+        if (!link) return;
 
-  if (!link) return;
+        // Only intercept links in the bottom navigation
+        const rect = link.getBoundingClientRect();
 
-  // Only intercept links in the bottom navigation
-  const rect = link.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.65) return;
 
-  if (rect.top < window.innerHeight * 0.65) return;
+        event.preventDefault();
+        event.stopImmediatePropagation();
 
-  event.preventDefault();
-  event.stopImmediatePropagation();
-
-  window.location.assign(
-    "https://www.instagram.com/?variant=following"
-  );
-}, true);
-        })();
-      `,
-      });
+        window.location.assign(
+          "https://www.instagram.com/?variant=following"
+        );
+      }, true);
+    })();
+  `,
+});
       // A transition notice belongs to the first document only.
       notice = {};
       this.startWatchdog(profileId);
