@@ -103,20 +103,27 @@ export class BrowserService {
           window.__JUSTAGRAM_INITIALIZED__ = true;
           window.__JUSTAGRAM_DATA__ = ${JSON.stringify(payload)};
           ${injectedScripts.join("\n;\n")}
-          const updateHomeLinks = () => {
-  document.querySelectorAll('a[href="/"]').forEach(link => {
-    link.setAttribute("href", "/?variant=following");
-  });
-};
+         document.addEventListener("click", function (event) {
+  const target = event.target;
 
-updateHomeLinks();
+  if (!(target instanceof Element)) return;
 
-new MutationObserver(updateHomeLinks).observe(document.documentElement, {
-  childList: true,
-  subtree: true,
-  attributes: true,
-  attributeFilter: ["href"]
-});
+const link = target.closest('a[href="/"], a[href="https://www.instagram.com/"]');
+
+  if (!link) return;
+
+  // Only intercept links in the bottom navigation
+  const rect = link.getBoundingClientRect();
+
+  if (rect.top < window.innerHeight * 0.65) return;
+
+  event.preventDefault();
+  event.stopImmediatePropagation();
+
+  window.location.assign(
+    "https://www.instagram.com/?variant=following"
+  );
+}, true);
         })();
       `,
       });
