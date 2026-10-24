@@ -107,6 +107,31 @@ export class BrowserService {
   const target = event.target;
 if (!(target instanceof Element)) return;
 
+  const path = window.location.pathname;
+
+  const isDmInbox =
+    path === "/direct" ||
+    path === "/direct/" ||
+    path === "/direct/inbox" ||
+    path === "/direct/inbox/";
+
+  if (isDmInbox) {
+    const backButton = target.closest('[role="button"]');
+
+    if (
+      backButton &&
+      backButton.querySelector('svg[aria-label="Tilbake"]')
+    ) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+
+      window.location.assign(
+        "https://www.instagram.com/?variant=following"
+      );
+      return;
+    }
+  }
+
 const link = target.closest(
           'a[href="/"], a[href="https://www.instagram.com/"]'
         );
