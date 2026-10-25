@@ -35,7 +35,7 @@ jobs:
       - name: Build and sync
         run: bun run sync
         
-      - name: Enable iOS swipe navigation
+      - name: Enable iOS swipe and inline video playback
         run: |
           python3 - <<'PY'
           from pathlib import Path
@@ -47,15 +47,23 @@ jobs:
           path = files[0]
           source = path.read_text()
 
-          old = "self.webView.allowsBackForwardNavigationGestures = NO;"
-          new = "self.webView.allowsBackForwardNavigationGestures = YES;"
+          changes = {
+              "self.webView.allowsBackForwardNavigationGestures = NO;":
+              "self.webView.allowsBackForwardNavigationGestures = YES;",
 
-          if source.count(old) != 1:
-              raise SystemExit("Could not locate the expected swipe setting")
+              "configuration.allowsInlineMediaPlayback = _browserOptions.allowinlinemediaplayback;":
+              "configuration.allowsInlineMediaPlayback = YES;"
+          }
 
-          path.write_text(source.replace(old, new))
-          print(f"Enabled swipe navigation in {path}")
+          for old, new in changes.items():
+              if source.count(old) != 1:
+                  raise SystemExit(f"Could not find expected setting: {old}")
+              source = source.replace(old, new)
+
+          path.write_text(source)
+          print(f"Enabled swipe navigation and inline playback in {path}")
           PY
+
 
       - name: Build unsigned iOS app
         run: |
