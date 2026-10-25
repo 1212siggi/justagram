@@ -13,7 +13,8 @@ export class BrowserService {
   private static readonly WATCHDOG_TIMEOUT = 10000;
   private static readonly INSTAGRAM_URL = "https://www.instagram.com/?variant=following";
   private static readonly BROWSER_OPTIONS =
-    "location=no,zoom=no,toolbar=no,footer=no,hardwareback=yes,disallowoverscroll=yes";
+    "location=no,zoom=no,toolbar=no,footer=no,hardwareback=yes,disallowoverscroll=yes,allowInlineMediaPlayback=yes";
+
 
   public static async open(
     data: LoadedAssets,
